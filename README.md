@@ -10,6 +10,3 @@ Este proyecto es una implementación del juego "Who Are Ya?", donde el objetivo 
 
 * **Desarrollado por:** eclipselovers (Iván González, Eneko Santos, Beñat Arruti, Alex Cenera)
 * **Asignatura:** [Web Sistemak] (2025-2026)
-
----
-⌨️ con ❤️
