@@ -1,4 +1,4 @@
-import { stringToHTML } from './fragments.js';
+import { stringToHTML, higher, lower } from './fragments.js';
 // YOUR CODE HERE :
 // .... stringToHTML ....
 // .... setupRows .....
@@ -56,12 +56,20 @@ export let setupRows = function (game) {
     }
 
     function setContent(guess) {
+        const birthCheck = check('birthdate', guess.birthdate);
+        let gezia = '';
+
+        if (birthCheck === 'higher') {
+            gezia = higher;
+        } else if (birthCheck === 'lower') {
+            gezia = lower;
+        }
         return [
             `<img src="https://playfootball.games/media/nations/${guess.nationality.toLowerCase()}.svg" alt="" style="width: 60%;">`,
             `<img src="https://playfootball.games/media/competitions/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
             `<img src="https://cdn.sportmonks.com/images/soccer/teams/${guess.teamId % 32}/${guess.teamId}.png" alt="" style="width: 60%;">`,
             `${guess.position}`,
-            `${getAge(guess.birthdate)}`
+            `${getAge(guess.birthdate)}${gezia}`
         ]
     }
 
@@ -92,7 +100,6 @@ export let setupRows = function (game) {
         const foundPlayer = game.players.find(player => {
             return player.id === playerId;
         });
-        console.log(foundPlayer);
         return foundPlayer;
     }
 

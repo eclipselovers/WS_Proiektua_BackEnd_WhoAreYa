@@ -1,6 +1,7 @@
 import { folder, leftArrow, stringToHTML } from "./fragments.js";
 import { fetchJSON } from "./loaders.js";
 import { setupRows } from "./rows.js";
+import { autocomplete } from "./autocomplete.js";
 
 function differenceInDays(date1) {
     // YOUR CODE HERE
@@ -67,17 +68,7 @@ Promise.all([fetchJSON("../json/fullplayers25.json"), fetchJSON("../json/solutio
     document.getElementById("mistery").src = `https://playfootball.games/media/players/${game.solution.id % 32}/${game.solution.id}.png`;
 
       // YOUR CODE HERE
-      let addRow = setupRows(game);
-      let myInput = document.getElementById("myInput")
-      myInput.addEventListener("keyup", function(event) {
-          if (event.key === "Enter") {
-              const playerId = parseInt(myInput.value);
-              if (!isNaN(playerId)) {
-                  addRow(playerId);
-                  myInput.value = "";
-              }
-          }
-      });
+      autocomplete(document.getElementById("myInput"), game)
 
       //
   }
