@@ -3,6 +3,7 @@ import { fetchJSON } from "./loaders.js";
 import { setupRows } from "./rows.js";
 import { autocomplete } from "./autocomplete.js";
 
+
 function differenceInDays(date1) {
     // YOUR CODE HERE
     const today = new Date();

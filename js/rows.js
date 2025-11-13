@@ -2,6 +2,7 @@ import { stringToHTML, higher, lower } from './fragments.js';
 import { stats } from './fragments.js';
 import { updateStats } from './stats.js';
 import { getStats } from './stats.js';
+import {initState} from "./stats.js";
 // YOUR CODE HERE :
 // .... stringToHTML ....
 // .... setupRows .....
@@ -12,7 +13,7 @@ const attribs = ['nationality', 'leagueId', 'teamId', 'position', 'birthdate']
 
 export let setupRows = function (game) {
 
-    //let [state, updateState] = initState('WAYgameState', game.solution.id)
+    let [state, updateState] = initState('WAYgameState', game.solution.id)
 
     function leagueToFlag(leagueId) {
         const leagueMap = {
@@ -151,7 +152,7 @@ export let setupRows = function (game) {
         let content = setContent(guess)
 
         game.guesses.push(playerId)
-        //updateState(playerId)
+        updateState(playerId)
 
         resetInput();
 
