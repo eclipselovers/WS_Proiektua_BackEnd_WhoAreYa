@@ -21,6 +21,7 @@ let difference_In_Days = differenceInDays(new Date("2025-10-01"));
 window.onload = function () {
   document.getElementById("gamenumber").innerText = difference_In_Days.toString();
   document.getElementById("back-icon").innerHTML = folder + leftArrow;
+
 };
 
 let game = {
@@ -69,7 +70,24 @@ Promise.all([fetchJSON("../json/fullplayers25.json"), fetchJSON("../json/solutio
     document.getElementById("mistery").src = `https://playfootball.games/media/players/${game.solution.id % 32}/${game.solution.id}.png`;
 
       // YOUR CODE HERE
+      let state = JSON.parse(localStorage.getItem('WAYgameState'));
+      if(state){
+          const todayStr  = new Date().toISOString().slice(0,10);
+          const endedStr  = state.endedDate ? new Date(state.endedDate).toISOString().slice(0,10) : null;
+          const rows = setupRows(game);
+          if(state.ended && state.success && endedStr === todayStr){
+              state.guesses.forEach(e =>{  let guess = rows.getPlayer(e); let content = rows.setContent(guess); rows.showContent(content, guess)})
+              rows.success();
+          } else if(state.ended && !state.success && endedStr === todayStr ){
+              state.guesses.forEach(e =>{ let guess = rows.getPlayer(e);let content = rows.setContent(guess); rows.showContent(content, guess)})
+              rows.gameOver();
+          }
+          game.guesses = state.guesses
+      }
       autocomplete(document.getElementById("myInput"), game)
+
+
+
 
       //
   }

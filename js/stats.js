@@ -24,11 +24,11 @@ let initState = function(what, solutionId) {
     }
 
     const addGuess = function(guess) {
-        let actguesses = state.guesses
-        if(actguesses.length < 8){
+        let actguesses = JSON.parse(localStorage.getItem(key)).guesses;
+       if(actguesses.length < 8){
             state.guesses.push(guess);
             localStorage.setItem(key, JSON.stringify(state));
-        }
+       }
     };
 
     return [state, addGuess];
