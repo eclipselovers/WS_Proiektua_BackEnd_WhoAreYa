@@ -31,4 +31,3 @@ data.teams.forEach(t => {
 
 
 
-
