@@ -82,6 +82,8 @@ Promise.all([fetchJSON("../json/fullplayers25.json"), fetchJSON("../json/solutio
           } else if(state.ended && !state.success && endedStr === todayStr ){
               state.guesses.forEach(e =>{ let guess = rows.getPlayer(e);let content = rows.setContent(guess); rows.showContent(content, guess)})
               rows.gameOver();
+          }else if (!state.ended){
+              state.guesses.forEach(e =>{  let guess = rows.getPlayer(e); let content = rows.setContent(guess); rows.showContent(content, guess)})
           }
           game.guesses = state.guesses
       }
