@@ -1,16 +1,16 @@
 const { stringToHTML, higher, lower, stats } = require('./fragments.js');
-const { updateStats, getStats } = require('./stats.js');
+const { updateStats, getStats, initState } = require('./stats.js');
 // YOUR CODE HERE :
 // .... stringToHTML ....
 // .... setupRows .....
 
 const delay = 350;
-const attribs = ['nationality', 'leagueId', 'teamId', 'position', 'birthdate']
+const attribs = ['nationality', 'leagueId', 'teamId', 'position', 'birthdate', 'shirtNumber']
 
 
 let setupRows = function (game) {
 
-    //let [state, updateState] = initState('WAYgameState', game.solution.id)
+    let [state, updateState] = initState('WAYgameState', game.solution.id)
 
     function leagueToFlag(leagueId) {
         const leagueMap = {
@@ -46,6 +46,14 @@ let setupRows = function (game) {
                 return "higher"
             } else {
                 return "lower"
+            }
+        } else if (theKey === "shirtNumber") {
+            if (theValue > game.solution[theKey]) {
+                return "lower";
+            } else if (theValue < game.solution[theKey]) {
+                return "higher";
+            } else {
+                return "correct";
             }
         } else {
             if (game.solution[theKey] === theValue){
@@ -83,12 +91,22 @@ let setupRows = function (game) {
         } else if (birthCheck === 'lower') {
             gezia = lower;
         }
+
+        const numberz = check('shirtNumber', guess.number);
+        let gezia2 = '';
+
+        if (numberz === 'higher') {
+            gezia2 = higher;
+        } else if (numberz === 'lower') {
+            gezia2 = lower;
+        }
         return [
             `<img src="https://playfootball.games/media/nations/${guess.nationality.toLowerCase()}.svg" alt="" style="width: 60%;">`,
             `<img src="https://playfootball.games/media/competitions/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
             `<img src="https://cdn.sportmonks.com/images/soccer/teams/${guess.teamId % 32}/${guess.teamId}.png" alt="" style="width: 60%;">`,
             `${guess.position}`,
-            `${getAge(guess.birthdate)}${gezia}`
+            `${getAge(guess.birthdate)}${gezia}`,
+            `#${guess.number}${gezia2}`
         ]
     }
 
@@ -96,20 +114,27 @@ let setupRows = function (game) {
         let fragments = '', s = '';
         for (let j = 0; j < content.length; j++) {
             s = "".concat(((j + 1) * delay).toString(), "ms")
-            fragments += `<div class="w-1/5 shrink-0 flex justify-center ">
-                            <div class="mx-1 overflow-hidden w-full max-w-2 shadowed font-bold text-xl flex aspect-square rounded-full justify-center items-center bg-slate-400 text-white ${check(attribs[j], guess[attribs[j]]) == 'correct' ? 'bg-green-500' : ''} opacity-0 fadeInDown" style="max-width: 60px; animation-delay: ${s};">
+            fragments += `<div class="flex justify-center items-center shrink-0">
+                            <div class="mx-1 flex justify-center items-center rounded-full bg-slate-400 text-white ${check(attribs[j], guess[attribs[j]]) == 'correct' ? 'bg-green-500' : ''} opacity-0 fadeInDown overflow-hidden font-bold text-[12px] leading-none shadowed" 
+                                 style="width: 50px; height: 50px; min-width: 50px; max-width: 50px; animation-delay: ${s};">
                                 ${content[j]}
                             </div>
                          </div>`
         }
 
-        let child = `<div class="flex w-full flex-wrap text-l py-2">
-                        <div class=" w-full grow text-center pb-2">
-                            <div class="mx-1 overflow-hidden h-full flex items-center justify-center sm:text-right px-4 uppercase font-bold text-lg opacity-0 fadeInDown " style="animation-delay: 0ms;">
+        let child = `<div class="flex flex-col w-full py-2">
+                        
+                        <div class="w-full text-center pb-2">
+                            <div class="inline-block opacity-0 fadeInDown uppercase font-bold text-lg" style="animation-delay: 0ms;">
                                 ${guess.name}
                             </div>
                         </div>
-                        ${fragments}`
+
+                        <div class="flex justify-center items-center gap-2 w-full flex-wrap px-2">
+                            ${fragments}
+                        </div>
+
+                    </div>`
 
         let playersNode = document.getElementById('players')
         playersNode.prepend(stringToHTML(child))
@@ -130,8 +155,18 @@ let setupRows = function (game) {
     }
     function gameEnded(lastGuess){
         // Game ends if guessed correctly or after 8 attempts
-        return lastGuess === game.solution.id || (game.guesses && game.guesses.length >= 8);
+        if(lastGuess === game.solution.id || (game.guesses && game.guesses.length >= 8) ){
+            let state2 = JSON.parse(localStorage.getItem('WAYgameState'));
+            state2.ended = true;
+            state2.endedDate = new Date().toISOString();
+            localStorage.setItem('WAYgameState', JSON.stringify(state2));
+            return true;
+        } else {
+            return false;
+        }
+
     }
+
     resetInput();
     function success(){
         unblur('success');
@@ -141,7 +176,8 @@ let setupRows = function (game) {
         unblur('failure');
         showStats();
     }
-    return /* addRow */ function (playerId) {
+
+    addRow = function (playerId) {
 
         let guess = getPlayer(playerId)
         console.log(guess)
@@ -149,7 +185,7 @@ let setupRows = function (game) {
         let content = setContent(guess)
 
         game.guesses.push(playerId)
-        //updateState(playerId)
+        updateState(playerId)
 
         resetInput();
 
@@ -157,6 +193,9 @@ let setupRows = function (game) {
             updateStats(game.guesses.length);
 
             if (playerId == game.solution.id) {
+                let state2 = JSON.parse(localStorage.getItem('WAYgameState'));
+                state2.succes = true;
+                localStorage.setItem('WAYgameState', JSON.stringify(state2));
                 success();
             }
 
@@ -205,7 +244,6 @@ let setupRows = function (game) {
         setInterval(updateCountdown, 1000);
     }
 
-
     function showGuessDistribution() {
         const statsData = getStats('gameStats');
         const dist = statsData.winDistribution;
@@ -237,8 +275,7 @@ let setupRows = function (game) {
             document.getElementById('distributionWindow').remove();
         };
     }
-
-
+    
+    return { addRow, success, gameOver, setContent, showContent, getPlayer };
 }
-
 module.exports = { setupRows };
