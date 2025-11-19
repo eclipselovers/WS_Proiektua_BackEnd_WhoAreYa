@@ -2434,3 +2434,29 @@ footer p:last-child {
     font-size: 0.8rem;
     color: #9ca3af;
 }
+
+.dist-bars {
+    margin-top: 15px;
+}
+
+.dist-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.dist-label {
+    width: 20px;
+}
+
+.dist-bar {
+    height: 12px;
+    background-color: #3b82f6;
+    margin: 0 8px;
+    border-radius: 4px;
+}
+
+.dist-count {
+    width: 20px;
+    text-align: right;
+}
