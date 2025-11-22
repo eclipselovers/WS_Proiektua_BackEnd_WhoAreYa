@@ -58,7 +58,7 @@ function autocomplete(inp, game) {
                         return player.name === inp.value;
                     });
 
-                    addRow(foundPlayer.id);
+                    addRow.addRow(foundPlayer.id);
                 });
                 a.appendChild(b);
             }
@@ -620,7 +620,7 @@ let setupRows = function (game) {
         setInterval(updateCountdown, 1000);
     }
 
-	function showGuessDistribution() {
+    function showGuessDistribution() {
         const statsData = getStats('gameStats');
         const dist = statsData.winDistribution;
 
@@ -651,10 +651,11 @@ let setupRows = function (game) {
             document.getElementById('distributionWindow').remove();
         };
     }
-	
+    
     return { addRow, success, gameOver, setContent, showContent, getPlayer };
 }
 module.exports = { setupRows };
+
 },{"./fragments.js":2,"./stats.js":7}],7:[function(require,module,exports){
 // Converted to CommonJS exports at bottom
 
