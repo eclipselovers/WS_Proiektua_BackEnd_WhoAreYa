@@ -58,7 +58,7 @@ function autocomplete(inp, game) {
                         return player.name === inp.value;
                     });
 
-                    addRow(foundPlayer.id);
+                    addRow.addRow(foundPlayer.id);
                 });
                 a.appendChild(b);
             }

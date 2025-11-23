@@ -218,7 +218,7 @@ let setupRows = function (game) {
         if (gameEnded(playerId)) {
             updateStats(game.guesses.length);
 
-            if (playerId === game.solution.id) {
+            if (playerId == game.solution.id) {
                 let state2 = JSON.parse(localStorage.getItem('WAYgameState'));
                 state2.succes = true;
                 localStorage.setItem('WAYgameState', JSON.stringify(state2));
@@ -301,7 +301,7 @@ let setupRows = function (game) {
             document.getElementById('distributionWindow').remove();
         };
     }
-
+    
     return { addRow, success, gameOver, setContent, showContent, getPlayer };
 }
 module.exports = { setupRows };
