@@ -4,7 +4,7 @@ const connectDB  = require("./config/database");
 const indexRoutes = require("./routes/index");
 const userRoutes = require("./routes/users");
 const errorHandler = require("./middlewares/errorHandler");
-//dsakldna
+
 const app = express();
 app.use(express.json());
 
