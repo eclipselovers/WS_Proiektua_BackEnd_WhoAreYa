@@ -57,7 +57,7 @@ function getSolution(players, solutionArray, difference_In_Days) {
     }
 }
 
-Promise.all([fetchJSON("../json/fullplayers25.json"), fetchJSON("../json/solution25.json")]).then(
+Promise.all([fetchJSON("../src/json/fullplayers25.json"), fetchJSON("../src/json/solution25.json")]).then(
   (values) => {
 
     let solution;
