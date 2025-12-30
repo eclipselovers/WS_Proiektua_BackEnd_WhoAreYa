@@ -1,7 +1,7 @@
+const path = require("path");
 
-
-const getMain = async (req, res, next) => {
-    res.json({ ok: true })
+const getMain = (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 };
 
 
