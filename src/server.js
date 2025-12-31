@@ -18,4 +18,5 @@ app.use(errorHandler);
 
 connectDB().then(() => {
     app.listen(3000, () => console.log("Server running on port 3000"));
+    console.log("\nhttp://localhost:3000\n");
 });
