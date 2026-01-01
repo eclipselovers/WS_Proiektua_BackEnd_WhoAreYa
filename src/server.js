@@ -1,7 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database");
-const { League, Team, Player } = require("./models");
+const League = require("./models/League");
+const Team = require("./models/Team");
+const Player = require("./models/Player");
 const indexRoutes = require("./routes/index");
 const userRoutes = require("./routes/users");
 const errorHandler = require("./middlewares/errorHandler");
