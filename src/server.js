@@ -1,11 +1,18 @@
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database");
-const { League, Team, Player } = require("./models");
+const League = require("./models/League");
+const Team = require("./models/Team");
+const Player = require("./models/Player");
 const indexRoutes = require("./routes/index");
 const userRoutes = require("./routes/users");
+const adminRoutes = require("./routes/admin");
 const errorHandler = require("./middlewares/errorHandler");
 const path = require("path");
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const logger = require('morgan');
+const { seedDatabase } = require('./seed/seedDatabase');
 
 // Sample data for seeding
 const seedData = async () => {
@@ -14,9 +21,7 @@ const seedData = async () => {
         const leaguesCount = await League.countDocuments();
         if (leaguesCount === 0) {
             console.log('No data found. Seeding database...');
-            
-            // Import the seed function
-            const { seedDatabase } = require('./seed/seedDatabase');
+
             await seedDatabase();
         } else {
             console.log('Database already contains data. Skipping seeding.');
@@ -29,10 +34,26 @@ const seedData = async () => {
 
 
 const app = express();
+
+const {setUserLocals} = require('./middlewares/auth');
+app.use(setUserLocals);
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use("/index", indexRoutes);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+
+
+app.use("/", indexRoutes);
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
 
 app.use(errorHandler);
 

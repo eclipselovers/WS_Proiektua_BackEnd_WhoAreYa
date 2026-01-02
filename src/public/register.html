@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="eu" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erregistratu - WhoAreYa</title>
+    <link href="./css/main.css" rel="stylesheet">
+    <script src="./js/bundle.js"></script>
+</head>
+<body class="bg-gray-900 min-h-screen p-4">
+  <nav class="mb-8">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-end">
+        <a href="/" class="p-2 rounded-full hover:bg-gray-700 transition-colors duration-200" title="Hasiera">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+  
+  <main class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md border border-gray-700 mx-auto">
+        <h1 class="text-2xl font-bold text-white mb-6 text-center">Kontu berri bat sortu</h1>
+        <form action="/register" method="post" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Izena:</label>
+                <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Zure izena"
+                >
+            </div>
+
+            <div>
+                <label for="surname" class="block text-sm font-medium text-gray-700 mb-1">Abizena(k):</label>
+                <input
+                    type="text"
+                    name="surname"
+                    id="surname"
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Zure abizena(k)"
+                >
+            </div>
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Erabiltzaile izena:</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Zure erabiltzaile izena"
+                >
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email-a:</label>
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="zure@email.com"
+                >
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Pasahitza:</label>
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Gutxienez 8 karaktere"
+                    minlength="8"
+                >
+            </div>
+
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Berretsi pasahitza:</label>
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    required
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Berretsi zure pasahitza"
+                    minlength="8"
+                >
+            </div>
+
+            <div class="pt-2 space-y-3">
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out transform hover:scale-105"
+                >
+                    Erregistratu
+                </button>
+                <p class="text-sm text-white text-center">
+                    Dagoeneko kontu bat duzu? 
+                    <a href="/login" class="text-white hover:text-blue-300 font-medium">Hasi saioa hemen</a>
+                </p>
+            </div>
+        </form>
+    </main>
+    </main>
+</body>
+</html>
