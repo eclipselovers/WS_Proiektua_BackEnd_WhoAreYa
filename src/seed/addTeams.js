@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { League, Team } = require('../models');
+const League = require('../models/League');
+const Team = require('../models/Team');
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -176,5 +177,4 @@ const addTeams = async () => {
     }
 };
 
-// Run the function
-addTeams();
+module.exports = addTeams;

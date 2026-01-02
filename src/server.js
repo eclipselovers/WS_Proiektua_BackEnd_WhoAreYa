@@ -12,7 +12,7 @@ const path = require("path");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const logger = require('morgan');
-const { seedDatabase } = require('./seed/seedDatabase');
+const { seedDatabase , addTeams} = require('./seed/seedDatabase');
 
 // Sample data for seeding
 const seedData = async () => {
@@ -23,6 +23,14 @@ const seedData = async () => {
             console.log('No data found. Seeding database...');
 
             await seedDatabase();
+        } else {
+            console.log('Database already contains data. Skipping seeding.');
+        }
+        const teamsCount = await Team.countDocuments();
+        if (teamsCount === 0) {
+            console.log('No data found. Seeding database...');
+
+            await addTeams();
         } else {
             console.log('Database already contains data. Skipping seeding.');
         }
