@@ -55,8 +55,8 @@ const postLogin = async(req, res) => {
 
 const postRegister = async(req, res) => {
     if(req.body.email !== ""){
-        if(req.body.password.length <10 ){
-            req.session.error = 'Pasahitzak gutxienez 6 karaktere izan behar ditu!';
+        if(req.body.password.length <8 ){
+            req.session.error = 'Pasahitzak gutxienez 8 karaktere izan behar ditu!';
             alert(req.session.error)
             res.redirect('/register');
             return

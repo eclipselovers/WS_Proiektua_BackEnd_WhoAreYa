@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const playerSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true,
+        sparse: true
+    },
     name: {
         type: String,
         required: [true, 'El nombre del jugador es obligatorio'],
@@ -8,7 +13,8 @@ const playerSchema = new mongoose.Schema({
         minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
         maxlength: [100, 'El nombre no puede exceder los 100 caracteres']
     },
-    birthDate: {
+    // Field name adjusted to match fullplayers25.json ("birthdate")
+    birthdate: {
         type: Date,
         required: [true, 'La fecha de nacimiento es obligatoria'],
         validate: {
@@ -23,22 +29,22 @@ const playerSchema = new mongoose.Schema({
         required: [true, 'La nacionalidad es obligatoria'],
         trim: true
     },
+    // Use numeric external IDs as present in fullplayers25.json
     teamId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team',
+        type: Number,
         required: [true, 'El ID del equipo es obligatorio']
     },
     leagueId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'League',
+        type: Number,
         required: [true, 'El ID de la liga es obligatorio']
     },
+    // Position values in the JSON are abbreviated (GK, DF, MF, FW)
     position: {
         type: String,
         required: [true, 'La posición es obligatoria'],
         enum: {
-            values: ['Portero', 'Defensa', 'Centrocampista', 'Delantero'],
-            message: 'Posición no válida. Valores permitidos: Portero, Defensa, Centrocampista, Delantero'
+            values: ['GK', 'DF', 'MF', 'FW'],
+            message: 'Posición no válida. Valores permitidos: GK, DF, MF, FW'
         }
     },
     number: {
