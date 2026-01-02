@@ -1,10 +1,11 @@
 const express = require("express");
-const { getMainUser, postLogout } = require("../controllers/userController");
+const { getMainUser, getLogout } = require("../controllers/userController");
+const {isAuthenticated} = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/", getMainUser);
+router.get("/", isAuthenticated,getMainUser);
 
-router.post('/logout', postLogout)
+router.get('/logout', isAuthenticated, getLogout)
 
 module.exports = router;

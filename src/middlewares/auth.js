@@ -1,3 +1,5 @@
+const User = require('../models/User');
+
 function isAuthenticated(req, res, next) {
     console.log('Checking session... userId:', req.session.userId);
     if (!req.session.userId) {
@@ -14,8 +16,10 @@ function setUserLocals(req, res, next) {
     next();
 }
 
-function isAdmin(req, res, next){
-    if(req.session.user.role !== 'admin'){
+async function isAdmin(req, res, next){
+    const user = await User.findById(req.session.userId);
+
+    if(user.role !== 'admin'){
         return res.status(403).send('Forbidden');
     }
     next();
