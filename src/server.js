@@ -66,10 +66,10 @@ app.use(session({
 app.use("/", indexRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
-app.use("/players", playersRoutes);
-app.use("/teams", teamsRoutes);
-app.use("/leagues", leaguesRoutes);
-app.use('/solution', solutionRoutes);
+app.use("/api/players", playersRoutes);
+app.use("/api/teams", teamsRoutes);
+app.use("/api/leagues", leaguesRoutes);
+app.use('/api/solution', solutionRoutes);
 
 app.use(errorHandler);
 
