@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 
 const leagueSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true,
+        sparse: true
+    },
     name: {
         type: String,
         required: [true, 'El nombre de la liga es obligatorio'],

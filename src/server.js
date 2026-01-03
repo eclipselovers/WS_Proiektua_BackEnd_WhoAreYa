@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, '.env') });
 const express = require("express");
 const connectDB = require("./config/database");
 const League = require("./models/League");
@@ -7,8 +8,11 @@ const Player = require("./models/Player");
 const indexRoutes = require("./routes/index");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
-const errorHandler = require("./middlewares/errorHandler");
-const path = require("path");
+const playersRoutes = require("./routes/players");
+const teamsRoutes = require("./routes/teams");
+const leaguesRoutes = require("./routes/leagues");
+const solutionRoutes = require('./routes/solution');
+const { errorHandler } = require("./middlewares/errorHandler");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const logger = require('morgan');
@@ -62,6 +66,10 @@ app.use(session({
 app.use("/", indexRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
+app.use("/api/players", playersRoutes);
+app.use("/api/teams", teamsRoutes);
+app.use("/api/leagues", leaguesRoutes);
+app.use('/api/solution', solutionRoutes);
 
 app.use(errorHandler);
 

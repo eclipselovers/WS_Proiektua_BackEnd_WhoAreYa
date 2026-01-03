@@ -7,137 +7,151 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 
 
-function seedDatabase(){
-    // Load environment variables from the root .env file
-    dotenv.config({ path: path.join(__dirname, '../../.env') });
+// Load environment variables from the root .env file
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-// Sample data for seeding
-    const leagues = [
-        {
-            name: 'La Liga',
-            code: 'PD',
-            country: 'Spain',
-            flagUrl: 'https://media-4.api-sports.io/football/leagues/140.png'
-        },
-        {
-            name: 'Premier League',
-            code: 'PL',
-            country: 'England',
-            flagUrl: 'https://media-4.api-sports.io/football/leagues/39.png'
-        },
-        {
-            name: 'Bundesliga',
-            code: 'BL1',
-            country: 'Germany',
-            flagUrl: 'https://media-4.api-sports.io/football/leagues/78.png'
-        }
-    ];
+// Load JSON source files from public/json
+const competitionsPath = path.join(__dirname, '..', 'public', 'json', 'competitions.json');
+const teamsPath = path.join(__dirname, '..', 'public', 'json', 'teams.json');
+const playersPath = path.join(__dirname, '..', 'public', 'json', 'fullplayers25.json');
 
-// Sample teams data
-    const teams = [
-        // La Liga teams
-        { name: 'Real Madrid', country: 'Spain', stadium: 'Santiago Bernabéu' },
-        { name: 'FC Barcelona', country: 'Spain', stadium: 'Camp Nou' },
-        { name: 'Atletico Madrid', country: 'Spain', stadium: 'Wanda Metropolitano' },
-        // Premier League teams
-        { name: 'Manchester City', country: 'England', stadium: 'Etihad Stadium' },
-        { name: 'Liverpool', country: 'England', stadium: 'Anfield' },
-        { name: 'Chelsea', country: 'England', stadium: 'Stamford Bridge' },
-        // Bundesliga teams
-        { name: 'Bayern Munich', country: 'Germany', stadium: 'Allianz Arena' },
-        { name: 'Borussia Dortmund', country: 'Germany', stadium: 'Signal Iduna Park' },
-        { name: 'RB Leipzig', country: 'Germany', stadium: 'Red Bull Arena' }
-    ];
+let competitionsData = { competitions: [] };
+let teamsData = { teams: [] };
+let playersData = [];
 
-// Sample players data
-    const players = [
-        // Real Madrid players
-        { name: 'Karim Benzema', position: 'Delantero', number: 9, nationality: 'France' },
-        { name: 'Vinicius Junior', position: 'Delantero', number: 20, nationality: 'Brazil' },
-        { name: 'Thibaut Courtois', position: 'Portero', number: 1, nationality: 'Belgium' },
-        // Barcelona players
-        { name: 'Robert Lewandowski', position: 'Delantero', number: 9, nationality: 'Poland' },
-        { name: 'Pedri', position: 'Centrocampista', number: 8, nationality: 'Spain' },
-        // Manchester City players
-        { name: 'Kevin De Bruyne', position: 'Centrocampista', number: 17, nationality: 'Belgium' },
-        { name: 'Erling Haaland', position: 'Delantero', number: 9, nationality: 'Norway' },
-        // Bayern Munich players
-        { name: 'Thomas Müller', position: 'Delantero', number: 25, nationality: 'Germany' },
-        { name: 'Joshua Kimmich', position: 'Centrocampista', number: 6, nationality: 'Germany' }
-    ];
+try {
+    const compRaw = fs.readFileSync(competitionsPath, 'utf8');
+    competitionsData = JSON.parse(compRaw);
+} catch (e) {
+    console.warn('Could not read competitions.json, proceeding with empty leagues');
+}
 
-    const seedDatabase = async () => {
-        try {
-            // Set default MongoDB URI if not in environment
+try {
+    const teamsRaw = fs.readFileSync(teamsPath, 'utf8');
+    teamsData = JSON.parse(teamsRaw);
+} catch (e) {
+    console.warn('Could not read teams.json, proceeding with empty teams');
+}
+
+try {
+    const playersRaw = fs.readFileSync(playersPath, 'utf8');
+    playersData = JSON.parse(playersRaw);
+} catch (e) {
+    console.warn('Could not read fullplayers25.json, proceeding with empty players');
+}
+
+const seedDatabase = async () => {
+    try {
+        // If not connected, connect (server likely already connected)
+        if (mongoose.connection.readyState !== 1) {
             const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/whoareya';
-
-            // Connect to MongoDB
-            console.log('Connecting to MongoDB with URI:', mongoUri);
             await mongoose.connect(mongoUri, {
                 serverSelectionTimeoutMS: 5000,
                 socketTimeoutMS: 45000,
                 family: 4,
                 autoIndex: true
             });
-
-            console.log('Connected to MongoDB for seeding...');
-
-            // Clear existing data
-            await Promise.all([
-                League.deleteMany({}),
-                Team.deleteMany({}),
-                Player.deleteMany({})
-            ]);
-            console.log('Cleared existing data');
-
-            // Insert leagues
-            const createdLeagues = await League.insertMany(leagues);
-            console.log(`Inserted ${createdLeagues.length} leagues`);
-
-            // Prepare teams with league references
-            const teamsWithLeagues = teams.map((team, index) => {
-                // Assign teams to leagues (3 teams per league)
-                const leagueIndex = Math.floor(index / 3);
-                return {
-                    ...team,
-                    leagueId: createdLeagues[leagueIndex]._id,
-                    logoUrl: `https://media-4.api-sports.io/football/teams/${index + 1}.png`
-                };
-            });
-
-            // Insert teams
-            const createdTeams = await Team.insertMany(teamsWithLeagues);
-            console.log(`Inserted ${createdTeams.length} teams`);
-
-            // Prepare players with team and league references
-            const playersWithReferences = players.map((player, index) => {
-                // Assign players to teams
-                const teamIndex = index % createdTeams.length;
-                const team = createdTeams[teamIndex];
-
-                return {
-                    ...player,
-                    teamId: team._id,
-                    leagueId: team.leagueId,
-                    birthDate: new Date(1990 + (index % 10), (index % 12), (index % 28) + 1), // Random birth dates
-                    imageUrl: `https://media-4.api-sports.io/football/players/${100000 + index}.png`
-                };
-            });
-
-            // Insert players
-            const createdPlayers = await Player.insertMany(playersWithReferences);
-            console.log(`Inserted ${createdPlayers.length} players`);
-
-            console.log('Database seeded successfully!');
-            process.exit(0);
-        } catch (error) {
-            console.error('Error seeding database:', error);
-            process.exit(1);
         }
-    };
 
+        // Clear existing data
+        await Promise.all([
+            League.deleteMany({}),
+            Team.deleteMany({}),
+            Player.deleteMany({})
+        ]);
+
+        // Insert leagues from competitions.json (type === 'LEAGUE')
+        const leaguesToInsert = (competitionsData.competitions || []).filter(c => c.type === 'LEAGUE').map(c => ({
+            id: c.id,
+            name: c.name,
+            code: c.code,
+            country: c.area && c.area.name ? c.area.name : undefined,
+            flagUrl: c.area && c.area.flag ? c.area.flag : c.emblem || undefined
+        }));
+
+        const createdLeagues = leaguesToInsert.length ? await League.insertMany(leaguesToInsert) : [];
+
+        // Insert teams from teams.json
+        const teamsToInsert = (teamsData.teams || []).map(t => ({
+            id: t.id,
+            name: t.name,
+            logoUrl: t.crest || t.logo || undefined,
+            country: t.address || undefined,
+            stadium: t.venue || undefined,
+            leagueExternalId: null
+        }));
+
+        const createdTeams = teamsToInsert.length ? await Team.insertMany(teamsToInsert) : [];
+
+        // Insert players from fullplayers25.json — fields already match Player schema shape
+        const playersToInsert = (playersData || []).map(p => ({
+            id: p.id,
+            name: p.name,
+            birthdate: p.birthdate ? new Date(p.birthdate) : undefined,
+            nationality: p.nationality || undefined,
+            teamId: p.teamId || null,
+            leagueId: p.leagueId || null,
+            position: p.position,
+            number: p.number || undefined,
+            imageUrl: p.imageUrl || undefined
+        }));
+
+        if (playersToInsert.length) {
+            // Use insertMany with ordered:false to continue on individual doc errors
+            await Player.insertMany(playersToInsert, { ordered: false });
+        }
+
+        console.log('Database seeded successfully!');
+        return true;
+    } catch (error) {
+        console.error('Error seeding database:', error);
+        throw error;
+    }
+};
+
+const addTeams = async () => {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/whoareya';
+            await mongoose.connect(mongoUri);
+        }
+
+        const existingLeagues = await League.find();
+        if (existingLeagues.length === 0) {
+            throw new Error('No leagues found. Run seedDatabase first.');
+        }
+
+        const teamsWithLeagues = teams.map((team, index) => {
+            const leagueIndex = Math.floor(index / 3);
+            return {
+                ...team,
+                leagueId: existingLeagues[leagueIndex % existingLeagues.length]._id,
+                logoUrl: `https://media-4.api-sports.io/football/teams/${index + 1}.png`
+            };
+        });
+
+        await Team.insertMany(teamsWithLeagues);
+        console.log('Teams added successfully');
+        return true;
+    } catch (error) {
+        console.error('Error adding teams:', error);
+        throw error;
+    }
+};
+
+module.exports = { seedDatabase, addTeams };
+
+// If executed directly, run the seeder
+if (require.main === module) {
+    seedDatabase()
+        .then(() => {
+            console.log('Seeding finished.');
+            process.exit(0);
+        })
+        .catch((err) => {
+            console.error('Seeding failed:', err);
+            process.exit(1);
+        });
 }
-
-module.exports = seedDatabase;
 
 

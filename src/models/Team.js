@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 
 const teamSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true,
+        sparse: true
+    },
+    leagueExternalId: {
+        type: Number,
+        sparse: true
+    },
     name: {
         type: String,
         required: [true, 'El nombre del equipo es obligatorio'],
@@ -11,8 +20,7 @@ const teamSchema = new mongoose.Schema({
     },
     leagueId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'League',
-        required: [true, 'El ID de la liga es obligatorio']
+        ref: 'League'
     },
     logoUrl: {
         type: String,
