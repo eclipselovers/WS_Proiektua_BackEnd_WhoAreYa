@@ -1,5 +1,5 @@
 const { folder, leftArrow, stringToHTML } = require("./fragments.js");
-const { fetchJSON } = require("./loaders.js");
+const { fetchJSON, fetchSolution } = require("./loaders.js");
 const { setupRows } = require("./rows.js");
 const { autocomplete } = require("./autocomplete.js");
 
@@ -57,14 +57,19 @@ function getSolution(players, solutionArray, difference_In_Days) {
     }
 }
 
-Promise.all([fetchJSON("../src/json/fullplayers25.json"), fetchJSON("../src/json/solution25.json")]).then(
-  (values) => {
+Promise.all([fetchJSON('fullplayers25'), fetchSolution(difference_In_Days)]).then(
+    (values) => {
 
-    let solution;
-    
-    [game.players, solution] = values;
+        let solutionResp;
+        [game.players, solutionResp] = values;
 
-    game.solution = getSolution(game.players, solution, difference_In_Days);
+        // If we fetched the solution by game number from the API, it returns { success:true, data:{player,...} }
+        if (solutionResp && solutionResp.data && solutionResp.data.player) {
+            game.solution = solutionResp.data.player;
+        } else {
+            // Fallback to old method if API returned an array
+            game.solution = getSolution(game.players, solutionResp, difference_In_Days);
+        }
     
     console.log(game.solution);
 

@@ -4,6 +4,7 @@ const League = require('../models/League');
 
 const getSolutionByGameNumber = async (req, res, next) => {
     try {
+        console.log("aaa");
         const gameNumber = parseInt(req.params.gameNumber, 10);
 
         const total = await Player.countDocuments();
@@ -42,4 +43,18 @@ const getSolutionByGameNumber = async (req, res, next) => {
     }
 };
 
-module.exports = { getSolutionByGameNumber };
+const fs = require('fs');
+const path = require('path');
+
+const getSolutionList = async (req, res, next) => {
+    try {
+        const filePath = path.join(__dirname, '..', 'public', 'json', 'solution25.json');
+        const raw = await fs.promises.readFile(filePath, 'utf8');
+        const arr = JSON.parse(raw);
+        res.json({ success: true, data: arr });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { getSolutionByGameNumber, getSolutionList };

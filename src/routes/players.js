@@ -6,10 +6,13 @@ const { playerValidators, playerValidatorsForUpdate, validateRequest } = require
 
 const router = express.Router();
 
-router.get("/", isAuthenticated ,getAllPlayers);
-router.get("/:id", isAuthenticated ,getPlayer);
-router.post("/", isAuthenticated ,isAdmin, playerValidators, validateRequest, createPlayer);
-router.put("/:id", isAuthenticated ,isAdmin, playerValidatorsForUpdate, validateRequest, updatePlayer);
-router.delete("/:id", isAuthenticated ,isAdmin, deletePlayer);
+// Public read endpoints
+router.get("/", getAllPlayers);
+router.get("/:id", getPlayer);
+
+// Protected write endpoints
+router.post("/", isAuthenticated, isAdmin, playerValidators, validateRequest, createPlayer);
+router.put("/:id", isAuthenticated, isAdmin, playerValidatorsForUpdate, validateRequest, updatePlayer);
+router.delete("/:id", isAuthenticated, isAdmin, deletePlayer);
 
 module.exports = router;
