@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="eu" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editatu Jokalaria - WhoAreYa</title>
+  <link href="/css/main.css" rel="stylesheet">
+  <style>
+    #editForm input,
+    #editForm select,
+    #editForm textarea {
+      color: #000 !important;
+    }
+    #formMsg {
+      color: #fff !important;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-4">
+  <div class="max-w-3xl mx-auto bg-gray-800 rounded-xl p-6 border border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-2xl font-bold text-white">Jokalaria editatu</h1>
+      <a href="/admin" class="text-sm text-blue-400 hover:text-blue-300">Itzuli Adminera</a>
+    </div>
+
+    <form id="editForm" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">League ID</label>
+          <input name="leagueId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="leagueId (opzional)" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Team ID</label>
+          <input name="teamId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="teamId (opzional)" />
+        </div>
+        <div>
+          <label class="text-sm text-white">Numero</label>
+          <input name="number" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="zenbakia (opzional)" />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm text-white">Izena</label>
+        <input name="name" type="text" required class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Izen osoa" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Postua</label>
+          <select name="position" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black">
+            <option value="">-- Aukeratu --</option>
+            <option value="GK">GK</option>
+            <option value="DF">DF</option>
+            <option value="MF">MF</option>
+            <option value="FW">FW</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm text-white">Nazionalitatea</label>
+          <input name="nationality" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Herrialdea" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Data jaiotza</label>
+          <input name="birthdate" type="date" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" />
+        </div>
+        <div>
+          <label class="text-sm text-white">Image URL</label>
+          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (opzional)" />
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Gorde</button>
+        <a href="/admin" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">Utzi</a>
+        <div id="formMsg" class="text-sm text-white"></div>
+      </div>
+    </form>
+  </div>
+
+    <script>
+    (function() {
+      const form = document.getElementById('editForm');
+      const msg = document.getElementById('formMsg');
+
+      function getEffectiveId() {
+        try {
+          const match = window.location.pathname.match(/\/admin\/players\/edit\/([^\/\?#]+)/);
+          if (match && match[1]) return decodeURIComponent(match[1]);
+        } catch (e) {
+          console.error('Errorea URL id-a kargatzeko:', e);
+        }
+        return null;
+      }
+
+      function showError(text, details) {
+        let display = text || 'Errore ezezaguna';
+        if (details) display += ' | ' + JSON.stringify(details);
+        msg.textContent = display;
+        msg.title = details ? JSON.stringify(details) : display;
+        msg.classList.remove('text-green-500');
+        msg.classList.add('text-red-500');
+        console.error('Error:', text, details);
+      }
+
+      async function loadPlayer() {
+        const playerId = getEffectiveId();
+        if (!playerId) {
+          showError('ID ezezaguna kargatzeko.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/players/' + encodeURIComponent(playerId), {
+            credentials: 'same-origin',
+            headers: { 'Cache-Control': 'no-cache' } // evita cache
+          });
+
+          if (!res.ok) {
+            const json = await res.json().catch(()=>null);
+            showError('Ezin izan da jokalaria kargatu.', json);
+            return;
+          }
+
+          const json = await res.json();
+          const player = (json.data && (json.data.player || json.data)) ? (json.data.player || json.data) : null;
+
+          if (!player) {
+            showError('Ezin izan da jokalaria kargatu (egitura ezezaguna).');
+            return;
+          }
+
+          form.id.value = player.id || '';
+          form.leagueId.value = player.leagueId || '';
+          form.teamId.value = player.teamId || '';
+          form.number.value = player.number || '';
+          form.name.value = player.name || '';
+          form.position.value = player.position || '';
+          form.nationality.value = player.nationality || '';
+          form.birthdate.value = player.birthdate || '';
+          form.imageUrl.value = player.imageUrl || '';
+
+        } catch (err) {
+          showError('Sarea errorea: ' + (err.message || err));
+        }
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        msg.textContent = '';
+
+        let effectiveId = getEffectiveId();
+        if (!effectiveId) {
+          showError('ID beharrezkoa editatzeko.');
+          return;
+        }
+
+        const data = {};
+        if (form.leagueId.value) data.leagueId = Number(form.leagueId.value);
+        if (form.teamId.value) data.teamId = Number(form.teamId.value);
+        if (form.birthdate.value) data.birthdate = form.birthdate.value;
+        if (form.name.value) data.name = form.name.value.trim();
+        if (form.position.value) data.position = form.position.value;
+        if (form.nationality.value) data.nationality = form.nationality.value.trim();
+        if (form.number.value) data.number = Number(form.number.value);
+        if (form.imageUrl.value) data.imageUrl = form.imageUrl.value.trim();
+
+        if (!data.name) {
+          showError('Izena beharrezkoa da.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/players/' + encodeURIComponent(effectiveId), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+          });
+
+          const json = await res.json().catch(()=>null);
+
+          if (res.ok) {
+            msg.textContent = 'Aldaketak gorde dira.';
+            msg.classList.remove('text-red-500');
+            msg.classList.add('text-green-500');
+          } else {
+            const errMsg = (json && json.error && json.error.message) ? json.error.message : 'Errore ezezaguna';
+            showError(errMsg, json && json.error && json.error.details);
+          }
+        } catch (err) {
+          showError('Sarea errorea: ' + (err.message || err));
+        }
+      });
+
+      loadPlayer();
+    })();
+    </script>
+
+ </body>
+</html>
