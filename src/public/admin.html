@@ -40,15 +40,71 @@
                         <h2 class="text-2xl font-bold text-white">Ongi etorri Administratzailea!</h2>
                         <br>
                         <p class="text-white">Administrazio panelerako sarrera duzu. Hemen zure erabiltzaileak eta sistemaren ezarpenak kudeatu ditzakezu.</p>
+                        <br>
+                        <a id="createPlayerBtn" href="/admin/players/new" class="bg-blue-500 inline-block text-center hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Jokalaria sortu</a>
+                        <div class="inline-flex items-center space-x-2">
+                          <input id="editIdInput" type="text" placeholder="ID jokalari" class="p-2 rounded bg-gray-900 border border-gray-700 text-black text-sm" style="color: #000 !important;" />
+                          <button id="editPlayerBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Editatu</button>
+                        </div>
+                        <div id="editIdMsg" class="mt-2 text-sm text-white"></div>
                     </div>
                 </div>
             </div>
         </div>
+        <script>
+            (function(){
+                const btn = document.getElementById('editPlayerBtn');
+                const input = document.getElementById('editIdInput');
+                const msg = document.getElementById('editIdMsg');
 
+                async function showMsg(text, isError = true) {
+                    msg.textContent = text || '';
+                    if (isError) {
+                        msg.classList.remove('text-green-400');
+                        msg.classList.add('text-red-400');
+                    } else {
+                        msg.classList.remove('text-red-400');
+                        msg.classList.add('text-green-400');
+                    }
+                }
 
+                btn.addEventListener('click', async function(e){
+                    e.preventDefault();
+                    msg.textContent = '';
+                    const id = (input.value || '').trim();
+                    if (!id) {
+                        input.classList.add('border-red-500');
+                        await showMsg('Sartu mesedez ID bat.', true);
+                        return;
+                    }
+                    input.classList.remove('border-red-500');
 
+                    try {
+                        const res = await fetch('/api/players/' + encodeURIComponent(id), { credentials: 'same-origin' });
+                        if (res.ok) {
+                            window.location.href = '/admin/players/edit/' + encodeURIComponent(id);
+                            return;
+                        }
 
+                        if (res.status === 404) {
+                            await showMsg('Jokalaria ez da aurkitu (ID: ' + id + ')', true);
+                            return;
+                        }
 
+                        let j = null;
+                        try { j = await res.json(); } catch (e) { /* ignore */ }
+                        const text = j && j.message ? j.message : await res.text().catch(()=>null);
+                        await showMsg('Errorea: ' + (text || ('HTTP ' + res.status)), true);
+
+                    } catch (err) {
+                        await showMsg('Sarea errorea: ' + (err.message || err), true);
+                        console.error('Edit check failed', err);
+                    }
+                });
+
+                input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); btn.click(); } });
+            })();
+        </script>
 
     </div>
 </body>

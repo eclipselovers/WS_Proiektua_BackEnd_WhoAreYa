@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="eu" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sortu Jokalaria - WhoAreYa</title>
+  <link href="/css/main.css" rel="stylesheet">
+  <style>
+    #createForm input,
+    #createForm select,
+    #createForm textarea {
+      color: #000 !important;
+    }
+    #formMsg {
+      color: #fff !important;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-4">
+  <div class="max-w-3xl mx-auto bg-gray-800 rounded-xl p-6 border border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-2xl font-bold text-white">Jokalaria sortu</h1>
+      <a href="/admin" class="text-sm text-blue-400 hover:text-blue-300">Itzuli Adminera</a>
+    </div>
+
+    <form id="createForm" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">ID</label>
+          <input name="id" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Numeric id" />
+        </div>
+        <div>
+          <label class="text-sm text-white">Liga ID</label>
+          <input name="leagueId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="leagueId" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Talde ID</label>
+          <input name="teamId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="teamId" />
+        </div>
+        <div>
+          <label class="text-sm text-white">Zenbakia</label>
+          <input name="number" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="zenbakia" />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm text-white">Izena</label>
+        <input name="name" type="text" required class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Izen osoa" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Postua</label>
+          <select name="position" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black">
+              <option value="">-- Aukeratu --</option>
+              <option value="GK">GK</option>
+              <option value="DF">DF</option>
+              <option value="MF">MF</option>
+              <option value="FW">FW</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm text-white">Nazionalitatea</label>
+          <input name="nationality" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Herrialdea" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-white">Jaiotza data</label>
+          <input name="birthdate" type="date" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" />
+        </div>
+        <div>
+          <label class="text-sm text-white">Irudiaren URL</label>
+          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (aukerakoa)" />
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Sortu</button>
+        <a href="/admin" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">Utzi</a>
+        <div id="formMsg" class="text-sm text-white"></div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function(){
+      const form = document.getElementById('createForm');
+      const msg = document.getElementById('formMsg');
+
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        msg.textContent = '';
+
+        const data = {
+          id: form.id.value ? Number(form.id.value) : undefined,
+          leagueId: form.leagueId.value ? Number(form.leagueId.value) : undefined,
+          teamId: form.teamId.value ? Number(form.teamId.value) : undefined,
+          birthdate: form.birthdate.value || null,
+          name: (form.name.value || '').trim(),
+          position: form.position.value || null,
+          nationality: (form.nationality.value || '').trim() || null,
+          number: form.number.value ? Number(form.number.value) : undefined,
+          imageUrl: (form.imageUrl.value || '').trim() || null
+        };
+
+        // Remove empty/undefined/null properties so validators don't choke
+        Object.keys(data).forEach(k => {
+          const v = data[k];
+          if (typeof v === 'undefined' || v === null || (typeof v === 'string' && v.trim() === '')) {
+            delete data[k];
+          }
+        });
+
+        // Basic required checks
+        if (!data.name) {
+          msg.textContent = 'Izena beharrezkoa da.';
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/players', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+          });
+
+          const json = await res.json();
+
+          if (!res.ok) {
+            // show validation messages if present
+            if (json && json.error && json.error.details) {
+              msg.textContent = json.error.message + ': ' + (json.error.details.map(d => d.msg || d.param).join(', '));
+            } else if (json && json.message) {
+              msg.textContent = json.message;
+            } else {
+              msg.textContent = 'Ezin izan da jokalaria sortu.';
+            }
+            return;
+          }
+
+          // Success -> adminra itzuli
+          window.location.href = '/admin';
+        } catch (err) {
+          msg.textContent = 'Sarea errorea: ' + (err.message || err);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
