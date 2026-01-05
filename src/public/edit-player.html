@@ -26,19 +26,19 @@
     <form id="editForm" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-sm text-white">League ID</label>
-          <input name="leagueId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="leagueId (opzional)" />
+          <label class="text-sm text-white">Liga ID</label>
+          <input name="leagueId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="leagueId (aukerakoa)" />
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-sm text-white">Team ID</label>
-          <input name="teamId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="teamId (opzional)" />
+          <label class="text-sm text-white">Talde ID</label>
+          <input name="teamId" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="teamId (aukerakoa)" />
         </div>
         <div>
-          <label class="text-sm text-white">Numero</label>
-          <input name="number" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="zenbakia (opzional)" />
+          <label class="text-sm text-white">Zenbakia</label>
+          <input name="number" type="number" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="zenbakia (aukerakoa)" />
         </div>
       </div>
 
@@ -66,12 +66,12 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-sm text-white">Data jaiotza</label>
+          <label class="text-sm text-white">Jaiotze data</label>
           <input name="birthdate" type="date" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" />
         </div>
         <div>
-          <label class="text-sm text-white">Image URL</label>
-          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (opzional)" />
+          <label class="text-sm text-white">Irudiaren URL</label>
+          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (aukerakoa)" />
         </div>
       </div>
 
@@ -193,6 +193,8 @@
             const errMsg = (json && json.error && json.error.message) ? json.error.message : 'Errore ezezaguna';
             showError(errMsg, json && json.error && json.error.details);
           }
+            // Success -> adminra itzuli
+            window.location.href = '/admin';
         } catch (err) {
           showError('Sarea errorea: ' + (err.message || err));
         }

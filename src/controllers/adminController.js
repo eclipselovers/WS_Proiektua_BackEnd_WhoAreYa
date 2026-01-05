@@ -2,11 +2,11 @@ const path = require("path");
 
 
 const getMainAdmin = (req, res) => {
-  res.render(path.join(__dirname, '..', 'public', 'admin.ejs'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'admin.html'));
 };
 
 const getNewPlayerForm = (req, res) => {
-  res.render(path.join(__dirname, '..', 'public', 'new-player.ejs'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'new-player.html'));
 };
 
 const getEditPlayerForm = (req, res) => {
@@ -16,7 +16,7 @@ const getEditPlayerForm = (req, res) => {
     return res.redirect('/admin');
   }
 
-  res.render(path.join(__dirname, '..', 'public', 'edit-player.ejs'), {
+  res.sendFile(path.join(__dirname, '..', 'public', 'edit-player.html'), {
     playerId: id
   });
 };
