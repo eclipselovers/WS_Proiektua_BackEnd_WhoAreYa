@@ -61,7 +61,15 @@ Promise.all([fetchJSON('fullplayers25'), fetchSolution(difference_In_Days)]).the
     (values) => {
 
         let solutionResp;
-        [game.players, solutionResp] = values;
+        const playersResp = values[0];
+        if (Array.isArray(playersResp)) {
+            game.players = playersResp;
+        } else if (playersResp && playersResp.data) {
+            game.players = Array.isArray(playersResp.data) ? playersResp.data : (playersResp.data.players || []);
+        } else {
+            game.players = playersResp || [];
+        }
+        [, solutionResp] = values;
 
         // If we fetched the solution by game number from the API, it returns { success:true, data:{player,...} }
         if (solutionResp && solutionResp.data && solutionResp.data.player) {
@@ -73,7 +81,7 @@ Promise.all([fetchJSON('fullplayers25'), fetchSolution(difference_In_Days)]).the
     
     console.log(game.solution);
 
-    document.getElementById("mistery").src = `https://playfootball.games/media/players/${game.solution.id % 32}/${game.solution.id}.png`;
+    document.getElementById("mistery").src = `/data/images/players/${game.solution.id}.png`;
 
       // YOUR CODE HERE
       let state = JSON.parse(localStorage.getItem('WAYgameState'));

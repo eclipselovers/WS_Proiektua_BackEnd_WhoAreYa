@@ -121,9 +121,9 @@ let setupRows = function (game) {
             gezia2 = lower;
         }
         return [
-            `<img src="https://playfootball.games/media/nations/${guess.nationality.toLowerCase()}.svg" alt="" style="width: 60%;">`,
-            `<img src="https://playfootball.games/media/competitions/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
-            `<img src="https://cdn.sportmonks.com/images/soccer/teams/${guess.teamId % 32}/${guess.teamId}.png" alt="" style="width: 60%;">`,
+            `<img src="/data/images/flags/${encodeURIComponent(guess.nationality)}.svg" alt="" style="width: 60%;">`,
+            `<img src="/data/images/logos/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
+            `<img src="/data/images/crests/${guess.teamId}.png" alt="" style="width: 60%;">`,
             `${guess.position}`,
             `${getAge(guess.birthdate)}${gezia}`,
             `#${guess.number}${gezia2}`
