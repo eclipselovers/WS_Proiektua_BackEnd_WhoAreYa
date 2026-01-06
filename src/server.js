@@ -51,6 +51,7 @@ const {setUserLocals} = require('./middlewares/auth');
 app.use(setUserLocals);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
+app.use('/data', express.static(path.join(__dirname, 'data')));
 
 app.use(logger('dev'));
 app.use(express.json());

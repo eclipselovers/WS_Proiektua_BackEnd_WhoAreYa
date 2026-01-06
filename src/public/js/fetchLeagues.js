@@ -4,22 +4,27 @@ const createWriteStream = require('fs').createWriteStream;
 
 
 
-const writepath = path.join(__dirname, '..', '..', 'src', 'data', 'images', 'logos');
+const writepath = path.join(__dirname, '..', '..', 'data', 'images', 'logos');
 async function main() {
     try {
         // create directory
         await fs.mkdir(writepath, {recursive: true});
 // Il read leagues file into an array of lines / "leagues.txt" => Change the location to your own convenience
         const content = await fs.readFile("../ligenIzenak.txt", "utf8");
-        const data = content.split("\n");
-        data.forEach((elem, idx) => {
+        const data = content.split(/\r?\n/).filter(Boolean);
+        data.forEach((rawElem, idx) => {
+            const elem = rawElem.toString().trim().replace(/[\r\n]/g, '');
+            if (!elem) return;
             const url = `https://playfootball.games/media/competitions/${elem}.png`;
             fetch(url)
                 .then(async res => {
                     // check status
                     if (res.status === 200) {
                         const reader = res.body.getReader();
-                        const fileStream = createWriteStream(`${writepath}/${elem}.png`);
+                        const outPath = path.join(writepath, `${elem}.png`);
+                        await fs.mkdir(path.dirname(outPath), { recursive: true });
+                        console.log('Writing to:', outPath);
+                        const fileStream = createWriteStream(outPath);
 
                         while (true) {
                             const {done, value} = await reader.read();
