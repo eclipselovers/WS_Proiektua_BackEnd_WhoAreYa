@@ -69,10 +69,6 @@
           <label class="text-sm text-white">Jaiotze data</label>
           <input name="birthdate" type="date" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" />
         </div>
-        <div>
-          <label class="text-sm text-white">Irudiaren URL</label>
-          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (aukerakoa)" />
-        </div>
       </div>
 
       <div class="flex items-center space-x-3">
@@ -143,7 +139,7 @@
           form.position.value = player.position || '';
           form.nationality.value = player.nationality || '';
           form.birthdate.value = player.birthdate || '';
-          form.imageUrl.value = player.imageUrl || '';
+          // imageUrl removed: not used
 
         } catch (err) {
           showError('Sarea errorea: ' + (err.message || err));
@@ -168,7 +164,7 @@
         if (form.position.value) data.position = form.position.value;
         if (form.nationality.value) data.nationality = form.nationality.value.trim();
         if (form.number.value) data.number = Number(form.number.value);
-        if (form.imageUrl.value) data.imageUrl = form.imageUrl.value.trim();
+        // imageUrl removed: not sent
 
         if (!data.name) {
           showError('Izena beharrezkoa da.');

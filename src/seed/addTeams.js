@@ -131,8 +131,7 @@ const addTeams = async () => {
                 const newLeague = await League.create({
                     name: leagueName,
                     code: leagueData.code,
-                    country: leagueData.country,
-                    flagUrl: `https://media-4.api-sports.io/football/leagues/${leagueData.code}.png`
+                    country: leagueData.country
                 });
                 leagueMap.set(leagueName, newLeague._id);
             }
@@ -149,8 +148,7 @@ const addTeams = async () => {
                     name: teamData.name,
                     country: teamData.country,
                     stadium: teamData.stadium,
-                    leagueId: leagueMap.get(teamData.leagueName),
-                    logoUrl: `https://media-4.api-sports.io/football/teams/${teamData.id}.png`
+                    leagueId: leagueMap.get(teamData.leagueName)
                 });
             }
         }

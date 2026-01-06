@@ -73,10 +73,6 @@
           <label class="text-sm text-white">Jaiotza data</label>
           <input name="birthdate" type="date" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" />
         </div>
-        <div>
-          <label class="text-sm text-white">Irudiaren URL</label>
-          <input name="imageUrl" type="text" class="w-full p-2 rounded bg-gray-900 border border-gray-700 text-black" placeholder="Irudiaren URL (aukerakoa)" />
-        </div>
       </div>
 
       <div class="flex items-center space-x-3">
@@ -105,7 +101,7 @@
           position: form.position.value || null,
           nationality: (form.nationality.value || '').trim() || null,
           number: form.number.value ? Number(form.number.value) : undefined,
-          imageUrl: (form.imageUrl.value || '').trim() || null
+          // imageUrl removed: images are served locally
         };
 
         // Remove empty/undefined/null properties so validators don't choke

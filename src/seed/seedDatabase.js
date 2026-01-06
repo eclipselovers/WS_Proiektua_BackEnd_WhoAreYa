@@ -65,8 +65,7 @@ const seedDatabase = async () => {
             id: c.id,
             name: c.name,
             code: c.code,
-            country: c.area && c.area.name ? c.area.name : undefined,
-            flagUrl: c.area && c.area.flag ? c.area.flag : c.emblem || undefined
+            country: c.area && c.area.name ? c.area.name : undefined
         }));
 
         const createdLeagues = leaguesToInsert.length ? await League.insertMany(leaguesToInsert) : [];
@@ -75,7 +74,6 @@ const seedDatabase = async () => {
         const teamsToInsert = (teamsData.teams || []).map(t => ({
             id: t.id,
             name: t.name,
-            logoUrl: t.crest || t.logo || undefined,
             country: t.address || undefined,
             stadium: t.venue || undefined,
             leagueExternalId: null
@@ -92,8 +90,7 @@ const seedDatabase = async () => {
             teamId: p.teamId || null,
             leagueId: p.leagueId || null,
             position: p.position,
-            number: p.number || undefined,
-            imageUrl: p.imageUrl || undefined
+            number: p.number || undefined
         }));
 
         if (playersToInsert.length) {
@@ -125,8 +122,7 @@ const addTeams = async () => {
             const leagueIndex = Math.floor(index / 3);
             return {
                 ...team,
-                leagueId: existingLeagues[leagueIndex % existingLeagues.length]._id,
-                logoUrl: `https://media-4.api-sports.io/football/teams/${index + 1}.png`
+                leagueId: existingLeagues[leagueIndex % existingLeagues.length]._id
             };
         });
 
