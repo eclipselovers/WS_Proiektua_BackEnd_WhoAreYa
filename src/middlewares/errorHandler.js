@@ -8,7 +8,7 @@ const playerValidators = [
 	body('leagueId').isInt({ min: 0 }).toInt().withMessage('leagueId must be a numeric id'),
 	body('position').isIn(['GK','DF','MF','FW']).withMessage('invalid position'),
 	body('number').optional().isInt({ min: 1, max: 99 }).withMessage('number 1-99'),
-	body('imageUrl').optional({ nullable: true, checkFalsy: true }).isURL({protocols: ['http','https'], require_protocol: true}).withMessage('imageUrl must be a valid URL')
+    // imageUrl removed: images are local
 ];
 
 const playerValidatorsForUpdate = [
@@ -19,7 +19,7 @@ const playerValidatorsForUpdate = [
 	body('leagueId').optional().isInt({ min: 0 }).toInt().withMessage('leagueId must be a numeric id'),
 	body('position').optional().isIn(['GK','DF','MF','FW']).withMessage('invalid position'),
 	body('number').optional().isInt({ min: 1, max: 99 }).withMessage('number 1-99'),
-	body('imageUrl').optional({ nullable: true, checkFalsy: true }).isURL({protocols: ['http','https'], require_protocol: true}).withMessage('imageUrl must be a valid URL')
+	// imageUrl removed: images are local
 ];
 
 const validateRequest = (req, res, next) => {

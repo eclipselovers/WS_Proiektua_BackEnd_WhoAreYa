@@ -12,30 +12,25 @@ const teamSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: [true, 'El nombre del equipo es obligatorio'],
+        required: [true, 'Taldearen izena derrigorrezkoa da'],
         trim: true,
-        minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
-        maxlength: [100, 'El nombre no puede exceder los 100 caracteres'],
+        minlength: [2, 'Izenak gutxienez 2 karaktere izan behar ditu'],
+        maxlength: [100, 'Izenak ezin du 100 karaktere baino gehiago izan'],
         unique: true
     },
     leagueId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'League'
     },
-    logoUrl: {
-        type: String,
-        trim: true,
-        match: [/^https?:\/\//, 'La URL del logo debe comenzar con http:// o https://']
-    },
     country: {
         type: String,
-        required: [true, 'El país es obligatorio'],
+        required: [true, 'Herrialdea derrigorrezkoa da'],
         trim: true
     },
     stadium: {
         type: String,
         trim: true,
-        maxlength: [200, 'El nombre del estadio no puede exceder los 200 caracteres']
+        maxlength: [200, 'Estadioko izenak ezin du 200 karaktere baino gehiago izan']
     }
 }, {
     timestamps: true

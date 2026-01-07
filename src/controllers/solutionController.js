@@ -32,8 +32,7 @@ const getSolutionByGameNumber = async (req, res, next) => {
             position: player.position || null,
             nationality: player.nationality || null,
             number: player.number || null,
-            imageUrl: player.imageUrl || null,
-            team: team ? { id: team.id, name: team.name, logoUrl: team.logoUrl } : null,
+            team: team ? { id: team.id, name: team.name } : null,
             league: league ? { id: league.id, name: league.name, code: league.code } : null
         };
 

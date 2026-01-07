@@ -8,55 +8,47 @@ const playerSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: [true, 'El nombre del jugador es obligatorio'],
+        required: [true, 'Jokalariaren izena derrigorrezkoa da'],
         trim: true,
-        minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
-        maxlength: [100, 'El nombre no puede exceder los 100 caracteres']
+        minlength: [2, 'Izenak gutxienez 2 karaktere izan behar ditu'],
+        maxlength: [100, 'Izenak ezin du 100 karaktere baino gehiago izan']
     },
-    // Field name adjusted to match fullplayers25.json ("birthdate")
     birthdate: {
         type: Date,
-        required: [true, 'La fecha de nacimiento es obligatoria'],
+        required: [true, 'Jaiotze-data derrigorrezkoa da'],
         validate: {
             validator: function(value) {
                 return value < new Date();
             },
-            message: 'La fecha de nacimiento debe ser anterior a la fecha actual'
+            message: 'Jaiotze-data gaur egungo data baino lehenagokoa izan behar da'
         }
     },
     nationality: {
         type: String,
-        required: [true, 'La nacionalidad es obligatoria'],
+        required: [true, 'Nazionalitatea derrigorrezkoa da'],
         trim: true
     },
-    // Use numeric external IDs as present in fullplayers25.json
     teamId: {
         type: Number,
-        required: [true, 'El ID del equipo es obligatorio']
+        required: [true, 'Taldearen ID-a derrigorrezkoa da']
     },
     leagueId: {
         type: Number,
-        required: [true, 'El ID de la liga es obligatorio']
+        required: [true, 'Ligaren ID-a derrigorrezkoa da']
     },
-    // Position values in the JSON are abbreviated (GK, DF, MF, FW)
     position: {
         type: String,
-        required: [true, 'La posición es obligatoria'],
+        required: [true, 'Postua derrigorrezkoa da'],
         enum: {
             values: ['GK', 'DF', 'MF', 'FW'],
-            message: 'Posición no válida. Valores permitidos: GK, DF, MF, FW'
+            message: "Postu baliogabea. Onartutako balioak: GK, DF, MF, FW"
         }
     },
     number: {
         type: Number,
-        min: [1, 'El número debe ser al menos 1'],
-        max: [99, 'El número no puede ser mayor que 99']
+        min: [1, 'Zenbakia gutxienez 1 izan behar da'],
+        max: [99, 'Zenbakia ezin da 99 baino handiagoa izan']
     },
-    imageUrl: {
-        type: String,
-        trim: true,
-        match: [/^https?:\/\//, 'La URL de la imagen debe comenzar con http:// o https://']
-    }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },

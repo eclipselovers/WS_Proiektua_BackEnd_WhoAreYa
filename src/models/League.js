@@ -9,31 +9,27 @@ const leagueSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: [true, 'El nombre de la liga es obligatorio'],
+        required: [true, 'Ligaren izena derrigorrezkoa da'],
         trim: true,
-        minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
-        maxlength: [100, 'El nombre no puede exceder los 100 caracteres'],
+        minlength: [2, 'Izenak gutxienez 2 karaktere izan behar ditu'],
+        maxlength: [100, 'Izenak ezin du 100 karaktere baino gehiago izan'],
         unique: true
     },
     code: {
         type: String,
-        required: [true, 'El código de la liga es obligatorio'],
+        required: [true, 'Ligaren kodea derrigorrezkoa da'],
         trim: true,
         uppercase: true,
-        minlength: [2, 'El código debe tener al menos 2 caracteres'],
-        maxlength: [10, 'El código no puede exceder los 10 caracteres'],
+        minlength: [2, 'Kodeak gutxienez 2 karaktere izan behar ditu'],
+        maxlength: [10, 'Kodeak ezin du 10 karaktere baino gehiago izan'],
         unique: true
     },
     country: {
         type: String,
-        required: [true, 'El país es obligatorio'],
+        required: [true, 'Herrialdea derrigorrezkoa da'],
         trim: true
     },
-    flagUrl: {
-        type: String,
-        trim: true,
-        match: [/^https?:\/\//, 'La URL de la bandera debe comenzar con http:// o https://']
-    }
+    
 }, {
     timestamps: true
 });

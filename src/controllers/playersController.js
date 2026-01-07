@@ -193,8 +193,7 @@ function formatPlayerResponse(playerDoc, teamsMap = new Map(), leaguesMap = new 
         position: p.position || null,
         nationality: p.nationality || null,
         number: p.number || null,
-        imageUrl: p.imageUrl || null,
-        team: team ? { id: team.id, name: team.name, logoUrl: team.logoUrl } : null,
+        team: team ? { id: team.id, name: team.name } : null,
         league: league ? { id: league.id, name: league.name, code: league.code } : null
     };
 }
